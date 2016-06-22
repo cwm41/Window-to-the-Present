@@ -1,3 +1,5 @@
+#Anyone can use and abuse this code for any purpose. I have cited borrowed bits of code inline or in the readme file
+
 import numpy as np
 import cv2
 import random
@@ -11,6 +13,7 @@ def pickNewVid(dirCount):
     currentVid = random.randint(1,dirCount)
 
     #preventing the same video from playing twice in a row
+    #This means you must start with TWO videos in the 'vids' folder or the program will crash
     global previousVid
     while currentVid == previousVid:
         #keep picking random numbbers until it's not the same as the last one
@@ -21,12 +24,11 @@ def pickNewVid(dirCount):
 
     global vidString
     temp ='vid'+str(currentVid)+'.avi'
-    vidString = os.path.join('/Users/Chris/Desktop/codestuff/pythonExperiments/videoTesters/refactor3/vids', temp)
+    vidString = os.path.join('...refactor3/vids', temp)
     return vidString
 
 #just grabs a random quote out of the csv and removes all brackets and stuff
 #returns clean quote
-#need to figure out how to format so the lines don't run off the page
 def getQuotes():
      with open('quotes.csv', 'rU') as datafile:
         allLines = list(datafile)
@@ -47,7 +49,7 @@ def insert_newlines(string, every=10):
 #Looks at the video folder and counts the files
 #returns the count
 def countVideos():
-    dirname = r"C:\Users\Chris\Desktop\codestuff\pythonExperiments\videoTesters\refactor3\vids"
+    dirname = r"...refactor3\vids"
     dirList = os.listdir(dirname)
     dirCount = len(dirList)
     return dirCount
@@ -59,7 +61,7 @@ def getNewFilename(dirCount):
     global newNumber
     newNumber = dirCount+1
     newFilename = "vid"+str(newNumber)+".avi"
-    newPath = os.path.join('/Users/Chris/Desktop/codestuff/pythonExperiments/videoTesters/refactor3/vids', newFilename)
+    newPath = os.path.join('...refactor3/vids', newFilename)
     print newFilename
     return newPath
 
@@ -121,8 +123,9 @@ video_player= cv2.VideoCapture(pickNewVid(countVideos()))
 #insert_newlines(currentQuote, every=10)
 
 #initializing camera and codec
-#MAKE SURE THE WRITE CAMERA IS BEING CALLED YOU IDIOT
+#Argument "1" is generally an attached webcam. On a laptop, "0" should be the built in camera
 camera_capture = cv2.VideoCapture(1)
+#codecs are not something I'm terribly familiar with, this took some experimenting
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
 #setting globals for later use
@@ -149,11 +152,9 @@ while(True):
     #if you don't see a video, go get a new one
     if (ret is False):
         video_player= cv2.VideoCapture(pickNewVid(countVideos()))
-        getQuotes()
-        #insert_newlines(currentQuote, every=10)
     #if you do have a video, play the next frame
     elif (ret):
-        #print next_frame.shape
+        #Various adjustments to video that I used for testing, different looks, adding text, etc. 
         #gray = cv2.cvtColor(next_frame, cv2.COLOR_BGR2GRAY)
         #texted = cv2.putText(next_frame, currentQuote, (100, 300), font, 1, (255,255,255), 2)
         resizer = cv2.resize(next_frame, (1024,768), interpolation = cv2.INTER_CUBIC)
@@ -164,7 +165,7 @@ while(True):
     ret2, viewer_frame = camera_capture.read()
     cv2.imshow('camera_frame', viewer_frame)
 
-    #print "Viewer:" + str(viewer)
+    #for testing
     #print(video_writer.isOpened())
 
     #only check for viewer every 10 frames to speed things up
